@@ -1,7 +1,6 @@
-import httpClient from '../../services'
 import { BoardService } from '../../services'
 
-let boardService = new BoardService(httpClient)
+let boardService = new BoardService()
 
 export default {
   namespaced: true,

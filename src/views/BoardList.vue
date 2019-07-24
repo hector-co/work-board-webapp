@@ -1,6 +1,7 @@
 <template>
   <div class="board-list">
     <h3>Boards</h3>
+    <b-button variant="primary" class="mb-2">Register</b-button>
     <table class="table b-table table-striped table-hover">
       <thead>
         <tr>
@@ -13,9 +14,12 @@
         <tr v-for="board in data" :key="board.id">
           <td>{{board.id}}</td>
           <td>{{board.title}}</td>
-          <td>
-            <b-button size="sm">
-            </b-button>
+          <td class="text-right">
+            <b-link
+              :to="{ name:'boards-edit', params:{ id:board.id } }"
+              class="btn btn-warning btn-sm"
+            >edit</b-link>
+            <b-button variant="danger" size="sm">close</b-button>
           </td>
         </tr>
       </tbody>

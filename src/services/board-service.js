@@ -1,10 +1,8 @@
-export class BoardService {
-  constructor(httpClient) {
-    this.httpClient = httpClient;
-  }
+import httpClient from '.'
 
+export class BoardService {
   async list() {
-    var response = await this.httpClient.get('boards');
+    var response = await httpClient.get('boards');
     return response.data;
   }
 }
