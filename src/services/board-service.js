@@ -1,8 +1,8 @@
-import httpClient from '.'
+import api from './api'
 
-export class BoardService {
+export default {
   async list() {
-    var response = await httpClient.get('boards');
+    var response = await api.get('boards');
     return response.data;
   }
 }

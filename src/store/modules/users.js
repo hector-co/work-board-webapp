@@ -1,7 +1,4 @@
-import httpClient from '../../services'
-import { UserService } from '../../services'
-
-let userService = new UserService(httpClient)
+import userService from '../../services/user-service'
 
 export default {
   namespaced: true,

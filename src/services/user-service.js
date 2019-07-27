@@ -1,10 +1,8 @@
-export class UserService {
-  constructor(httpClient) {
-    this.httpClient = httpClient;
-  }
+import api from './api'
 
+export default {
   async list() {
-    var response = await this.httpClient.get('users');
+    var response = await api.get('users');
     return response.data;
   }
 }

@@ -1,6 +1,4 @@
-import { BoardService } from '../../services'
-
-let boardService = new BoardService()
+import boardService from '../../services/board-service'
 
 export default {
   namespaced: true,
