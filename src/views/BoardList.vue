@@ -6,10 +6,15 @@
       <div class="card-column" v-for="board in data" :key="board.id">
         <div v-if="board == editing" class="card bg-light">
           <div class="card-header">
-            <input type="text" v-model="editing.title" class="form-control" />
+            <input type="text" v-model="editing.title" class="form-control" placeholder="Title" />
           </div>
           <div class="card-body">
-            <input type="text" v-model="editing.description" class="form-control" />
+            <input
+              type="text"
+              v-model="editing.description"
+              class="form-control"
+              placeholder="Description"
+            />
             <div class="text-right mt-2">
               <b-button @click="acceptEditing" size="sm" variant="success" class="mr-1">ok</b-button>
               <b-button @click="cancelEditing" size="sm" variant="danger">cancel</b-button>
@@ -29,8 +34,25 @@
           </div>
         </b-card>
       </div>
-      <b-card bg-variant="light" class="text-center">
-        <button class="btn btn-primary">Add board</button>
+      <div v-if="adding" class="card bg-light border-primary">
+        <div class="card-header">
+          <input type="text" v-model="newBoard.title" class="form-control" placeholder="Title" />
+        </div>
+        <div class="card-body">
+          <input
+            type="text"
+            v-model="newBoard.description"
+            class="form-control"
+            placeholder="Description"
+          />
+          <div class="text-right mt-2">
+            <b-button @click="acceptAdding" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="cancelAdding" size="sm" variant="danger">cancel</b-button>
+          </div>
+        </div>
+      </div>
+      <b-card v-else bg-variant="light" class="text-center" border-variant="primary">
+        <button @click="startAdding" class="btn btn-primary">Add board</button>
       </b-card>
     </div>
   </div>
@@ -43,10 +65,28 @@ export default {
   name: "BoardList",
   data() {
     return {
+      adding: false,
+      newBoard: null,
       editing: null
     };
   },
   methods: {
+    startAdding() {
+      this.adding = true;
+      this.newBoard = {
+        title: "New board",
+        description: ""
+      };
+    },
+    cancelAdding() {
+      this.adding = false;
+      this.newBoard = null;
+    },
+    acceptAdding() {
+      this.$store.dispatch("boards/register", this.newBoard).then(() => {
+        this.cancelAdding();
+      });
+    },
     startEditing(board) {
       this.editing = board;
     },

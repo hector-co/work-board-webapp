@@ -24,9 +24,9 @@ export default {
       boardService.list()
         .then(result => commit('setData', result))
     },
-    register({ commit }, board) {
+    register(store, board) {
       boardService.register(board)
-        .then(() => commit('registerBoard', board))
+        .then(() => store.dispatch('loadData'))
     },
     update({ commit }, board) {
       boardService.update(board.id, board)
