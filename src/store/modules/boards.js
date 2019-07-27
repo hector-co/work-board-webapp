@@ -11,6 +11,9 @@ export default {
       store.data = data;
       store.totalCount = totalCount;
     },
+    registerBoard(store, data) {
+      store.data.push(data)
+    },
     updateBoard(store, data) {
       var board = store.data.find(b => b.id == data.id);
       Object.assign(board, data);
@@ -20,6 +23,10 @@ export default {
     loadData({ commit }, ) {
       boardService.list()
         .then(result => commit('setData', result))
+    },
+    register({ commit }, board) {
+      boardService.register(board)
+        .then(() => commit('registerBoard', board))
     },
     update({ commit }, board) {
       boardService.update(board.id, board)

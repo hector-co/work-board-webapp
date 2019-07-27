@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import BoardList from './views/BoardList'
-import BoardEdit from './views/BoardEdit'
 
 Vue.use(Router)
 
@@ -19,11 +18,6 @@ export default new Router({
       path: '/boards',
       name: 'boards',
       component: BoardList
-    },
-    {
-      path: '/boards/edit/:id',
-      name: 'boards-edit',
-      component: BoardEdit
     }
   ]
 })
