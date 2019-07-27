@@ -10,12 +10,20 @@ export default {
     setData(store, { data, totalCount }) {
       store.data = data;
       store.totalCount = totalCount;
+    },
+    updateBoard(store, data) {
+      var board = store.data.find(b => b.id == data.id);
+      Object.assign(board, data);
     }
   },
   actions: {
-    loadData({ commit }) {
+    loadData({ commit }, ) {
       boardService.list()
         .then(result => commit('setData', result))
+    },
+    update({ commit }, board) {
+      boardService.update(board.id, board)
+        .then(() => commit('updateBoard', board))
     }
   }
 }

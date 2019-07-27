@@ -16,7 +16,7 @@
           <td>{{board.title}}</td>
           <td class="text-right">
             <b-link
-              :to="{ name:'boards-edit', params:{ id:board.id } }"
+              :to="{ name:'boards-edit', params:{ id: board.id } }"
               class="btn btn-warning btn-sm"
             >edit</b-link>
             <b-button variant="danger" size="sm">close</b-button>
