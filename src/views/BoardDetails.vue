@@ -24,7 +24,11 @@
             <b-button @click="deleteColumn(column)" size="sm" variant="danger">delete</b-button>
           </div>
         </div>
-        <div class="card-body"></div>
+        <div class="card-body">
+          <div class="text-center">
+            <button class="btn btn-info card-add">Add card</button>
+          </div>
+        </div>
       </div>
       <div v-if="adding" class="card card-column">
         <div class="card-body">
@@ -61,12 +65,9 @@ export default {
     acceptAddingColumn() {
       boardService
         .addColumn(this.id, { title: this.newColumnTitle })
-        .then(() => {
-          this.columns.push({
-            title: this.newColumnTitle
-          });
+        .then(result => {
+          this.columns.push(result.data);
           this.cancelAddingColumn();
-          this.loadColumns();
         });
     },
     cancelAddingColumn() {
@@ -125,6 +126,16 @@ export default {
 
       &:hover .btn-options.edit {
         display: block;
+      }
+    }
+
+    .card-body {
+      .card-add {
+        visibility: hidden;
+      }
+
+      &:hover .card-add {
+        visibility: visible;
       }
     }
   }

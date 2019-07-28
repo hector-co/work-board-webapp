@@ -10,7 +10,8 @@ export default {
     return response.data;
   },
   async register(board) {
-    await api.post(`boards`, board);
+    var response = await api.post(`boards`, board);
+    return response.data;
   },
   async update(id, board) {
     await api.put(`boards/${id}`, board);
@@ -20,7 +21,8 @@ export default {
     return response.data;
   },
   async addColumn(id, column) {
-    await api.post(`boards/${id}/columns`, column);
+    var response = await api.post(`boards/${id}/columns`, column)
+    return response.data;
   },
   async editColumn(id, column) {
     await api.put(`boards/${id}/columns/${column.id}`, column);

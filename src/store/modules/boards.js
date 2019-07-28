@@ -26,9 +26,8 @@ export default {
     },
     register(store, board) {
       boardService.register(board)
-        .then(() => {
-          store.commit('registerBoard', board)
-          store.dispatch('loadData')
+        .then(result => {
+          store.commit('registerBoard', result.data)
         })
     },
     update({ commit }, board) {
