@@ -13,50 +13,44 @@
               class="form-control"
               placeholder="Description"
             />
-            <div class="text-right mt-2">
-              <b-button @click="acceptEditing" size="sm" variant="success" class="mr-1">ok</b-button>
-              <b-button @click="cancelEditing" size="sm" variant="danger">cancel</b-button>
-            </div>
+          </div>
+          <div class="card-footer text-right">
+            <b-button @click="acceptEditing" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="cancelEditing" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
-        <b-card
-          @click="boardDetails(board)"
-          v-else
-          bg-variant="primary"
-          text-variant="white"
-          class="card-board"
-          :title="board.title"
-        >
-          <b-card-text>{{board.description}}</b-card-text>
-          <div class="text-right">
-            <b-button
-              @click="startEditing(board)"
-              size="sm"
-              variant="success"
-              class="btn-card mr-1"
-            >edit</b-button>
-            <!-- <b-button size="sm" variant="danger" class="btn-card">close</b-button> -->
+        <div v-else @click="boardDetails(board)" class="card text-white bg-primary card-board">
+          <div class="card-body">
+            <h4 class="card-title">{{board.title}}</h4>
+            <p class="card-text">{{board.description}}</p>
           </div>
-        </b-card>
+          <div class="card-footer text-right">
+            <button @click.stop="startEditing(board)" class="btn btn-success btn-sm btn-card">edit</button>
+          </div>
+        </div>
       </div>
-      <div v-if="adding" class="card bg-light border-primary">
-        <div class="card-body">
-          <input type="text" v-model="newBoard.title" class="form-control" placeholder="Title" />
-          <input
-            type="text"
-            v-model="newBoard.description"
-            class="form-control"
-            placeholder="Description"
-          />
-          <div class="text-right mt-2">
+      <div class="card-column">
+        <div v-if="adding" class="card bg-light border-primary">
+          <div class="card-body">
+            <input type="text" v-model="newBoard.title" class="form-control" placeholder="Title" />
+            <input
+              type="text"
+              v-model="newBoard.description"
+              class="form-control"
+              placeholder="Description"
+            />
+          </div>
+          <div class="card-footer text-right">
             <b-button @click="acceptAdding" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelAdding" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
+        <div v-else class="card bg-light">
+          <div class="card-body text-center">
+            <button @click="startAdding" class="btn btn-primary">Add board</button>
+          </div>
+        </div>
       </div>
-      <b-card v-else bg-variant="light" class="text-center" border-variant="primary">
-        <button @click="startAdding" class="btn btn-primary">Add board</button>
-      </b-card>
     </div>
   </div>
 </template>
@@ -126,6 +120,10 @@ export default {
 
       .card {
         width: 100%;
+
+        .card-body {
+          min-height: 116px;
+        }
       }
 
       .card-board {
