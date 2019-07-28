@@ -1,10 +1,10 @@
 <template>
   <div class="board-details">
-    <h3>{{title}}</h3>
+    <h3>{{board.title}}</h3>
     <button @click="startAddingColumn" class="btn btn-primary mb-3">Add column</button>
 
     <div class="card-group">
-      <div v-for="column of columns" :key="column.id" class="card card-column">
+      <div v-for="column of board.columns" :key="column.id" class="card card-column">
         <div v-if="column.id == editingColumn.id" class="card-header column-editing">
           <input type="text" v-model="editingColumn.title" />
           <div class="btn-options text-right">
@@ -43,15 +43,13 @@
   </div>
 </template>
 <script>
-import boardService from "../services/board-service";
+import { createNamespacedHelpers } from "vuex";
+const { mapState } = createNamespacedHelpers("boards");
 
 export default {
   name: "BoardDetails",
   data() {
     return {
-      id: 0,
-      title: "",
-      columns: [],
       adding: false,
       newColumnTitle: "",
       editingColumn: {}
@@ -62,17 +60,14 @@ export default {
       this.adding = true;
       this.newColumnTitle = "New column";
     },
-    acceptAddingColumn() {
-      boardService
-        .addColumn(this.id, { title: this.newColumnTitle })
-        .then(result => {
-          this.columns.push(result.data);
-          this.cancelAddingColumn();
-        });
-    },
     cancelAddingColumn() {
       this.adding = false;
       this.newColumnTitle = "";
+    },
+    acceptAddingColumn() {
+      this.$store
+        .dispatch("boards/addColumn", { title: this.newColumnTitle })
+        .then(() => this.cancelAddingColumn());
     },
     startEditingColumn(column) {
       this.editingColumn = Object.assign({}, column);
@@ -81,28 +76,21 @@ export default {
       this.editingColumn = {};
     },
     acceptEditingColumn() {
-      boardService.editColumn(this.id, this.editingColumn).then(() => {
-        this.loadColumns();
-      });
-      this.cancelEditingColumn();
+      this.$store
+        .dispatch("boards/editColumn", this.editingColumn)
+        .then(() => this.cancelEditingColumn());
     },
     deleteColumn(column) {
-      boardService.deleteColumn(this.id, column).then(() => {
-        this.loadColumns();
-      });
-    },
-    loadColumns() {
-      boardService.listColumns(this.id).then(result => {
-        this.columns = result.data;
-      });
+      this.$store.dispatch("boards/deleteColumn", column.id);
     }
   },
-  mounted() {
-    this.id = this.$route.params.id;
-    boardService.get(this.id).then(result => {
-      this.title = result.data.title;
-    });
-    this.loadColumns();
+  computed: {
+    ...mapState({
+      board: "selectedBoard"
+    })
+  },
+  created() {
+    this.$store.dispatch("boards/select", this.$route.params.id);
   }
 };
 </script>

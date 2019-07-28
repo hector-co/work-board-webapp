@@ -27,7 +27,7 @@ export default {
   async editColumn(id, column) {
     await api.put(`boards/${id}/columns/${column.id}`, column);
   },
-  async deleteColumn(id, column) {
-    await api.delete(`boards/${id}/columns/${column.id}`);
+  async deleteColumn(id, columnId) {
+    await api.delete(`boards/${id}/columns/${columnId}`);
   }
 }

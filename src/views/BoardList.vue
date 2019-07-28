@@ -3,7 +3,7 @@
     <h3>Boards</h3>
 
     <div class="cards-grid">
-      <div class="card-column" v-for="board in data" :key="board.id">
+      <div class="card-column" v-for="board in boards" :key="board.id">
         <div v-if="board == editing" class="card bg-primary">
           <div class="card-body">
             <input type="text" v-model="editing.title" class="form-control" placeholder="Title" />
@@ -106,7 +106,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["data", "totalCount"])
+    ...mapState(["boards", "totalCount"])
   },
   created() {
     this.$store.dispatch("boards/loadData");
