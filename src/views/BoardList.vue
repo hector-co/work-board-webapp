@@ -4,11 +4,9 @@
 
     <div class="cards-grid">
       <div class="card-column" v-for="board in data" :key="board.id">
-        <div v-if="board == editing" class="card bg-light">
-          <div class="card-header">
-            <input type="text" v-model="editing.title" class="form-control" placeholder="Title" />
-          </div>
+        <div v-if="board == editing" class="card bg-primary">
           <div class="card-body">
+            <input type="text" v-model="editing.title" class="form-control" placeholder="Title" />
             <input
               type="text"
               v-model="editing.description"
@@ -21,24 +19,29 @@
             </div>
           </div>
         </div>
-        <b-card v-else :header="board.title" bg-variant="light">
+        <b-card
+          @click="boardDetails(board)"
+          v-else
+          bg-variant="primary"
+          text-variant="white"
+          class="card-board"
+          :title="board.title"
+        >
           <b-card-text>{{board.description}}</b-card-text>
           <div class="text-right">
             <b-button
               @click="startEditing(board)"
               size="sm"
-              variant="secondary"
+              variant="success"
               class="btn-card mr-1"
             >edit</b-button>
-            <b-button size="sm" variant="danger" class="btn-card">close</b-button>
+            <!-- <b-button size="sm" variant="danger" class="btn-card">close</b-button> -->
           </div>
         </b-card>
       </div>
       <div v-if="adding" class="card bg-light border-primary">
-        <div class="card-header">
-          <input type="text" v-model="newBoard.title" class="form-control" placeholder="Title" />
-        </div>
         <div class="card-body">
+          <input type="text" v-model="newBoard.title" class="form-control" placeholder="Title" />
           <input
             type="text"
             v-model="newBoard.description"
@@ -97,6 +100,9 @@ export default {
       this.$store
         .dispatch("boards/update", this.editing)
         .then(() => (this.editing = null));
+    },
+    boardDetails(board) {
+      this.$router.push({ name: "boards-details", params: { id: board.id } });
     }
   },
   computed: {
@@ -120,6 +126,10 @@ export default {
 
       .card {
         width: 100%;
+      }
+
+      .card-board {
+        cursor: pointer;
       }
 
       .btn-card {
