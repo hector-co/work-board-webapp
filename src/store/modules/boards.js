@@ -76,7 +76,7 @@ export default {
     },
     deleteColumn({ commit, state }, columnId) {
       boardService.deleteColumn(state.selectedBoard.id, columnId)
-        .then(commit('deleteColumn', columnId));
+        .then(commit("deleteColumn", columnId));
     }
   }
 }

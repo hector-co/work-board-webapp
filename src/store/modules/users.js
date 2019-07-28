@@ -1,4 +1,4 @@
-import userService from '../../services/user-service'
+import userService from "../../services/user-service"
 
 export default {
   namespaced: true,
@@ -15,7 +15,7 @@ export default {
   actions: {
     getUsers({ commit }) {
       userService.list()
-        .then(result => commit('serUsers', result));
+        .then(result => commit("serUsers", result));
     }
   }
 }
