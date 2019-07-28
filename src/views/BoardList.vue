@@ -6,11 +6,16 @@
       <div class="card-column" v-for="board in boards" :key="board.id">
         <div v-if="board == editing" class="card bg-primary">
           <div class="card-body">
-            <input type="text" v-model="editing.title" class="form-control" placeholder="Title" />
+            <input
+              type="text"
+              v-model="editing.title"
+              class="form-control form-control-sm mb-1"
+              placeholder="Title"
+            />
             <input
               type="text"
               v-model="editing.description"
-              class="form-control"
+              class="form-control form-control-sm mb-1"
               placeholder="Description"
             />
           </div>
@@ -21,7 +26,7 @@
         </div>
         <div v-else @click="boardDetails(board)" class="card text-white bg-primary card-board">
           <div class="card-body">
-            <h4 class="card-title">{{board.title}}</h4>
+            <h5 class="card-title">{{board.title}}</h5>
             <p class="card-text">{{board.description}}</p>
           </div>
           <div class="card-footer text-right">
@@ -32,11 +37,16 @@
       <div class="card-column">
         <div v-if="adding" class="card bg-light border-primary">
           <div class="card-body">
-            <input type="text" v-model="newBoard.title" class="form-control" placeholder="Title" />
+            <input
+              type="text"
+              v-model="newBoard.title"
+              class="form-control form-control-sm mb-1"
+              placeholder="Title"
+            />
             <input
               type="text"
               v-model="newBoard.description"
-              class="form-control"
+              class="form-control form-control-sm mb-1"
               placeholder="Description"
             />
           </div>
@@ -122,7 +132,7 @@ export default {
         width: 100%;
 
         .card-body {
-          min-height: 116px;
+          min-height: 110px;
         }
       }
 
