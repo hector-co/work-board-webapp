@@ -6,7 +6,7 @@
     <div class="card-group">
       <div v-for="column of board.columns" :key="column.id" class="card card-column">
         <div v-if="column.id == editingColumn.id" class="card-header column-editing">
-          <input type="text" v-model="editingColumn.title" class="form-control" />
+          <input type="text" v-model="editingColumn.title" class="form-control form-control-sm" />
           <div class="btn-options text-right">
             <b-button @click="acceptEditingColumn" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelEditingColumn" size="sm" variant="danger">cancel</b-button>
@@ -32,7 +32,7 @@
       </div>
       <div v-if="adding" class="card card-column">
         <div class="card-header column-editing">
-          <input type="text" v-model="newColumnTitle" class="form-control" />
+          <input type="text" v-model="newColumnTitle" class="form-control form-control-sm" />
           <div class="btn-options text-right">
             <b-button @click="acceptAddingColumn" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelAddingColumn" size="sm" variant="danger">cancel</b-button>
@@ -102,8 +102,8 @@ export default {
 
     .card-header {
       &.column-editing {
-        padding-top: 0.35rem;
-        padding-bottom: 0.3rem;
+        padding-top: 0.5275rem;
+        padding-bottom: 0.5275rem;
       }
 
       .btn-options {
