@@ -1,7 +1,51 @@
 <template>
   <div class="board-details">
     <h3>{{board.title}}</h3>
-    <button @click="startAddingColumn" class="btn btn-primary mb-3">Add column</button>
+    <button @click="startAddingColumn" class="btn btn-primary mb-3 mr-1">Add column</button>
+    <button v-b-modal.add-card-modal class="btn btn-success mb-3">Add card</button>
+
+    <b-modal id="add-card-modal" title="Add card">
+      <b-form-group id="title-fieldset" label="Title" label-for="title-input">
+        <b-form-input id="title-input" v-model="newCard.title" trim></b-form-input>
+      </b-form-group>
+      <b-form-group id="description-fieldset" label="Description" label-for="description-input">
+        <b-form-input id="description-input" v-model="newCard.description" trim></b-form-input>
+      </b-form-group>
+      <b-form-group id="color-fieldset" label="Color" label-for="color-input">
+        <b-container>
+          <b-row>
+            <b-col>
+              <button class="btn btn-sm btn-success w-100">&nbsp;</button>
+            </b-col>
+            <b-col>
+              <button class="btn btn-sm btn-primary w-100">&nbsp;</button>
+            </b-col>
+            <b-col>
+              <button class="btn btn-sm btn-info w-100">&nbsp;</button>
+            </b-col>
+            <b-col>
+              <button class="btn btn-sm btn-warning w-100">&nbsp;</button>
+            </b-col>
+            <b-col>
+              <button class="btn btn-sm btn-danger w-100">&nbsp;</button>
+            </b-col>
+            <b-col>
+              <button class="btn btn-sm btn-secondary w-100">&nbsp;</button>
+            </b-col>
+          </b-row>
+        </b-container>
+      </b-form-group>
+      <b-form-group id="priority-fieldset" label="Priority" label-for="priority-input">
+        <b-form-select v-model="newCard.priority">
+          <option value="0">Low</option>
+          <option value="1">Medium</option>
+          <option value="2">High</option>
+        </b-form-select>
+      </b-form-group>
+      <b-form-group id="estimated-fieldset" label="Estimated points" label-for="estimated-input">
+        <b-form-input id="estimated-input" v-model="newCard.estimatedPoints" type="number" trim></b-form-input>
+      </b-form-group>
+    </b-modal>
 
     <div class="card-group">
       <div v-for="column of board.columns" :key="column.id" class="card card-column">
@@ -53,7 +97,14 @@ export default {
     return {
       adding: false,
       newColumnTitle: "",
-      editingColumn: {}
+      editingColumn: {},
+      newCard: {
+        title: "New card",
+        decription: "",
+        color: 1,
+        priority: 1,
+        estimatedPoints: null
+      }
     };
   },
   methods: {
