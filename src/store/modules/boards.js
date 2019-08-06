@@ -9,32 +9,55 @@ export default {
       title: "",
       columns: []
     },
-    totalCount: 0
+    totalCount: 0,
+    registering: false,
+    actionBoard: {
+      id: 0,
+      title: "",
+      description: ""
+    },
+    editingBoardId: 0
   },
   mutations: {
-    setData(state, { data, totalCount }) {
+    loadData(state, { data, totalCount }) {
       state.boards = data;
       state.totalCount = totalCount;
     },
-    register(state, data) {
-      state.boards.push(data)
+    startRegistering(state) {
+      state.actionBoard.id = 0;
+      state.actionBoard.title = "New board";
+      state.actionBoard.description = "";
+      state.registering = true;
     },
-    update(state, data) {
-      var board = state.boards.find(b => b.id == data.id);
-      Object.assign(board, data);
+    cancelRegistering(state) {
+      state.registering = false;
     },
-    select(state, data) {
-      Object.assign(state.selectedBoard, data);
+    register(state, board) {
+      state.boards.push(board);
     },
-    addColumn(state, data) {
-      state.selectedBoard.columns.push(data);
+    startUpdating(state, { id, title, description }) {
+      state.registering = false;
+      Object.assign(state.actionBoard, { id, title, description });
     },
-    editColumn(state, data) {
-      var column = state.selectedBoard.columns.find(c => c.id == data.id);
-      Object.assign(column, data);
+    cancelUpdating(state) {
+      state.actionBoard.id = 0;
     },
-    deleteColumn(state, id) {
-      var column = state.selectedBoard.columns.find(c => c.id == id);
+    update(state, board) {
+      var existing = state.boards.find(b => b.id == board.id);
+      Object.assign(existing, board);
+    },
+    select(state, board) {
+      Object.assign(state.selectedBoard, board);
+    },
+    addColumn(state, board) {
+      state.selectedBoard.columns.push(board);
+    },
+    editColumn(state, board) {
+      var column = state.selectedBoard.columns.find(c => c.id == board.id);
+      Object.assign(column, board);
+    },
+    deleteColumn(state, boardId) {
+      var column = state.selectedBoard.columns.find(c => c.id == boardId);
       var index = state.selectedBoard.columns.indexOf(column);
       state.selectedBoard.columns.splice(index, 1);
     }
@@ -42,17 +65,22 @@ export default {
   actions: {
     loadData({ commit }, ) {
       boardService.list()
-        .then(result => commit("setData", result))
+        .then(result => commit("loadData", result))
     },
-    register(store, board) {
-      boardService.register(board)
+    register({ commit, state }) {
+      boardService.register(state.actionBoard)
         .then(result => {
-          store.commit("register", result.data)
+          commit("register", result.data);
+          commit("cancelRegistering");
         })
     },
-    update({ commit }, board) {
+    update({ commit, state }) {
+      var board = state.actionBoard;
       boardService.update(board.id, board)
-        .then(() => commit("update", board))
+        .then(() => {
+          commit("update", board);
+          commit("cancelUpdating");
+        })
     },
     select({ commit }, boardId) {
       var selected = {};

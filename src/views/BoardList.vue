@@ -4,24 +4,24 @@
 
     <div class="cards-grid">
       <div class="card-column" v-for="board in boards" :key="board.id">
-        <div v-if="board == editing" class="card bg-primary">
+        <div v-if="board.id == actionBoard.id" class="card bg-primary">
           <div class="card-body">
             <input
               type="text"
-              v-model="editing.title"
+              v-model="actionBoard.title"
               class="form-control form-control-sm mb-1"
               placeholder="Title"
             />
             <input
               type="text"
-              v-model="editing.description"
+              v-model="actionBoard.description"
               class="form-control form-control-sm mb-1"
               placeholder="Description"
             />
           </div>
           <div class="card-footer text-right">
-            <b-button @click="acceptEditing" size="sm" variant="success" class="mr-1">ok</b-button>
-            <b-button @click="cancelEditing" size="sm" variant="danger">cancel</b-button>
+            <b-button @click="update" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="cancelUpdating" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
         <div v-else @click="boardDetails(board)" class="card text-white bg-primary card-board">
@@ -30,34 +30,34 @@
             <p class="card-text">{{board.description}}</p>
           </div>
           <div class="card-footer text-right">
-            <button @click.stop="startEditing(board)" class="btn btn-success btn-sm btn-card">edit</button>
+            <button @click.stop="startUpdating(board)" class="btn btn-success btn-sm btn-card">edit</button>
           </div>
         </div>
       </div>
       <div class="card-column">
-        <div v-if="adding" class="card bg-light border-primary">
+        <div v-if="registering" class="card bg-light border-primary">
           <div class="card-body">
             <input
               type="text"
-              v-model="newBoard.title"
+              v-model="actionBoard.title"
               class="form-control form-control-sm mb-1"
               placeholder="Title"
             />
             <input
               type="text"
-              v-model="newBoard.description"
+              v-model="actionBoard.description"
               class="form-control form-control-sm mb-1"
               placeholder="Description"
             />
           </div>
           <div class="card-footer text-right">
-            <b-button @click="acceptAdding" size="sm" variant="success" class="mr-1">ok</b-button>
-            <b-button @click="cancelAdding" size="sm" variant="danger">cancel</b-button>
+            <b-button @click="register" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="cancelRegistering" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
         <div v-else class="card bg-light">
           <div class="card-body text-center">
-            <button @click="startAdding" class="btn btn-primary">Add board</button>
+            <button @click="startRegistering" class="btn btn-primary">Add board</button>
           </div>
         </div>
       </div>
@@ -66,54 +66,29 @@
 </template>
 <script>
 import { createNamespacedHelpers } from "vuex";
-const { mapState } = createNamespacedHelpers("boards");
+const { mapState, mapMutations, mapActions } = createNamespacedHelpers(
+  "boards"
+);
 
 export default {
   name: "BoardList",
-  data() {
-    return {
-      adding: false,
-      newBoard: null,
-      editing: null
-    };
-  },
   methods: {
-    startAdding() {
-      this.adding = true;
-      this.newBoard = {
-        title: "New board",
-        description: ""
-      };
-    },
-    cancelAdding() {
-      this.adding = false;
-      this.newBoard = null;
-    },
-    acceptAdding() {
-      this.$store.dispatch("boards/register", this.newBoard).then(() => {
-        this.cancelAdding();
-      });
-    },
-    startEditing(board) {
-      this.editing = board;
-    },
-    cancelEditing() {
-      this.editing = null;
-    },
-    acceptEditing() {
-      this.$store
-        .dispatch("boards/update", this.editing)
-        .then(() => (this.editing = null));
-    },
+    ...mapMutations([
+      "startRegistering",
+      "cancelRegistering",
+      "startUpdating",
+      "cancelUpdating"
+    ]),
+    ...mapActions(["loadData", "register", "update"]),
     boardDetails(board) {
       this.$router.push({ name: "boards-details", params: { id: board.id } });
     }
   },
   computed: {
-    ...mapState(["boards", "totalCount"])
+    ...mapState(["boards", "totalCount", "registering", "actionBoard"])
   },
   created() {
-    this.$store.dispatch("boards/loadData");
+    this.loadData();
   }
 };
 </script>
