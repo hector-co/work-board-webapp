@@ -5,11 +5,11 @@
     <button @click="showModal" class="btn btn-success mb-3">Add card</button>
 
     <div class="card-group">
-      <div v-for="column of board.columns" :key="column.id" class="card card-column">
-        <div v-if="column.id == editingColumn.id" class="card-header column-editing">
-          <input type="text" v-model="editingColumn.title" class="form-control form-control-sm" />
+      <div v-for="column of columns" :key="column.id" class="card card-column">
+        <div v-if="column.id == actionColumn.id" class="card-header column-editing">
+          <input type="text" v-model="actionColumn.title" class="form-control form-control-sm" />
           <div class="btn-options text-right">
-            <b-button @click="acceptEditingColumn" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="editColumn" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelEditingColumn" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
@@ -22,7 +22,7 @@
               variant="success"
               class="mr-1"
             >edit</b-button>
-            <b-button @click="deleteColumn(column)" size="sm" variant="danger">delete</b-button>
+            <b-button @click="deleteColumn(column.id)" size="sm" variant="danger">delete</b-button>
           </div>
         </div>
         <div class="card-body">
@@ -33,9 +33,9 @@
       </div>
       <div v-if="adding" class="card card-column">
         <div class="card-header column-editing">
-          <input type="text" v-model="newColumnTitle" class="form-control form-control-sm" />
+          <input type="text" v-model="actionColumn.title" class="form-control form-control-sm" />
           <div class="btn-options text-right">
-            <b-button @click="acceptAddingColumn" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="addColumn" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelAddingColumn" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
@@ -46,47 +46,22 @@
 </template>
 <script>
 import { createNamespacedHelpers } from "vuex";
-const { mapState } = createNamespacedHelpers("boards");
+const { mapState, mapMutations, mapActions } = createNamespacedHelpers(
+  "boardColumns"
+);
 
 import CardAdd from "./CardAdd";
 
 export default {
   name: "BoardDetails",
-  data() {
-    return {
-      adding: false,
-      newColumnTitle: "",
-      editingColumn: {}
-    };
-  },
   methods: {
-    startAddingColumn() {
-      this.adding = true;
-      this.newColumnTitle = "New column";
-    },
-    cancelAddingColumn() {
-      this.adding = false;
-      this.newColumnTitle = "";
-    },
-    acceptAddingColumn() {
-      this.$store
-        .dispatch("boards/addColumn", { title: this.newColumnTitle })
-        .then(() => this.cancelAddingColumn());
-    },
-    startEditingColumn(column) {
-      this.editingColumn = Object.assign({}, column);
-    },
-    cancelEditingColumn() {
-      this.editingColumn = {};
-    },
-    acceptEditingColumn() {
-      this.$store
-        .dispatch("boards/editColumn", this.editingColumn)
-        .then(() => this.cancelEditingColumn());
-    },
-    deleteColumn(column) {
-      this.$store.dispatch("boards/deleteColumn", column.id);
-    },
+    ...mapMutations([
+      "startAddingColumn",
+      "cancelAddingColumn",
+      "startEditingColumn",
+      "cancelEditingColumn"
+    ]),
+    ...mapActions(["loadData", "addColumn", "editColumn", "deleteColumn"]),
     showModal() {
       this.$modal.show(
         CardAdd,
@@ -105,12 +80,10 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      board: "selectedBoard"
-    })
+    ...mapState(["board", "columns", "adding", "actionColumn"])
   },
   created() {
-    this.$store.dispatch("boards/select", this.$route.params.id);
+    this.loadData(this.$route.params.id);
   }
 };
 </script>

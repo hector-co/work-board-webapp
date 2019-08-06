@@ -4,11 +4,6 @@ export default {
   namespaced: true,
   state: {
     boards: [],
-    selectedBoard: {
-      id: 0,
-      title: "",
-      columns: []
-    },
     totalCount: 0,
     registering: false,
     actionBoard: {
@@ -43,23 +38,8 @@ export default {
       state.actionBoard.id = 0;
     },
     update(state, board) {
-      var existing = state.boards.find(b => b.id == board.id);
-      Object.assign(existing, board);
-    },
-    select(state, board) {
-      Object.assign(state.selectedBoard, board);
-    },
-    addColumn(state, board) {
-      state.selectedBoard.columns.push(board);
-    },
-    editColumn(state, board) {
-      var column = state.selectedBoard.columns.find(c => c.id == board.id);
-      Object.assign(column, board);
-    },
-    deleteColumn(state, boardId) {
-      var column = state.selectedBoard.columns.find(c => c.id == boardId);
-      var index = state.selectedBoard.columns.indexOf(column);
-      state.selectedBoard.columns.splice(index, 1);
+      var existent = state.boards.find(b => b.id == board.id);
+      Object.assign(existent, board);
     }
   },
   actions: {
@@ -81,30 +61,6 @@ export default {
           commit("update", board);
           commit("cancelUpdating");
         })
-    },
-    select({ commit }, boardId) {
-      var selected = {};
-      boardService.get(boardId)
-        .then(result => selected = result.data)
-        .then(() => {
-          boardService.listColumns(boardId)
-            .then(result => selected.columns = result.data)
-            .then(() => commit("select", selected))
-        });
-    },
-    addColumn({ commit, state }, column) {
-      boardService.addColumn(state.selectedBoard.id, column)
-        .then(result => {
-          commit("addColumn", result.data);
-        })
-    },
-    editColumn({ commit, state }, column) {
-      boardService.editColumn(state.selectedBoard.id, column)
-        .then(() => commit("editColumn", column))
-    },
-    deleteColumn({ commit, state }, columnId) {
-      boardService.deleteColumn(state.selectedBoard.id, columnId)
-        .then(commit("deleteColumn", columnId));
     }
   }
 }
