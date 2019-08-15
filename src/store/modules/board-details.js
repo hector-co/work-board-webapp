@@ -8,35 +8,15 @@ export default {
       title: String
     },
     columns: [],
-    adding: false,
-    actionColumn: {
-      id: Number,
-      title: String
-    }
+    cards: [],
   },
   mutations: {
     loadData(state, { board, columns }) {
       state.board = board;
       state.columns = columns;
     },
-    startAddingColumn(state) {
-      state.adding = true;
-      state.actionColumn.id = 0;
-      state.actionColumn.title = "New column";
-    },
-    cancelAddingColumn(state) {
-      state.adding = false;
-    },
     addColumn(state, column) {
       state.columns.push(column);
-    },
-    startEditingColumn(state, column) {
-      state.adding = false;
-      state.actionColumn.id = column.id;
-      state.actionColumn.title = column.title;
-    },
-    cancelEditingColumn(state) {
-      state.actionColumn.id = 0;
     },
     editColumn(state, column) {
       var existent = state.columns.find(c => c.id == column.id);
@@ -58,19 +38,13 @@ export default {
         .then(result => { columns = result.data })
         .then(() => commit('loadData', { board, columns }));
     },
-    addColumn({ commit, state }) {
-      boardService.addColumn(state.board.id, state.actionColumn)
-        .then(result => {
-          commit("addColumn", result.data);
-          commit("cancelAddingColumn");
-        })
+    async addColumn({ commit, state }, column) {
+      const result = await boardService.addColumn(state.board.id, column);
+      commit("addColumn", result.data);
     },
-    editColumn({ commit, state }) {
-      boardService.editColumn(state.board.id, state.actionColumn)
-        .then(() => {
-          commit("editColumn", state.actionColumn);
-          commit("cancelEditingColumn");
-        })
+    async editColumn({ commit, state }, column) {
+      await boardService.editColumn(state.board.id, column);
+      commit("editColumn", column);
     },
     deleteColumn({ commit, state }, columnId) {
       boardService.deleteColumn(state.board.id, columnId)

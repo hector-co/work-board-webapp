@@ -2,7 +2,7 @@
   <div class="board-details">
     <h3>{{board.title}}</h3>
     <button @click="startAddingColumn" class="btn btn-primary mb-3 mr-1">Add column</button>
-    <button @click="showModal" class="btn btn-success mb-3">Add card</button>
+    <button @click="showCardAdd" class="btn btn-success mb-3">Add card</button>
 
     <div class="card-group">
       <div v-for="column of columns" :key="column.id" class="card card-column">
@@ -46,23 +46,50 @@
 </template>
 <script>
 import { createNamespacedHelpers } from "vuex";
-const { mapState, mapMutations, mapActions } = createNamespacedHelpers(
-  "boardColumns"
-);
+const { mapState, mapActions } = createNamespacedHelpers("boardDetails");
 
 import CardAdd from "./CardAdd";
 
 export default {
   name: "BoardDetails",
+  data() {
+    return {
+      adding: false,
+      actionColumn: {
+        id: Number,
+        title: String
+      }
+    };
+  },
   methods: {
-    ...mapMutations([
-      "startAddingColumn",
-      "cancelAddingColumn",
-      "startEditingColumn",
-      "cancelEditingColumn"
-    ]),
-    ...mapActions(["loadData", "addColumn", "editColumn", "deleteColumn"]),
-    showModal() {
+    ...mapActions(["loadData", "editColumn", "deleteColumn"]),
+    startAddingColumn() {
+      this.adding = true;
+      this.actionColumn.id = 0;
+      this.actionColumn.title = "New column";
+    },
+    cancelAddingColumn() {
+      this.adding = false;
+    },
+    addColumn() {
+      this.$store
+        .dispatch("boardDetails/addColumn", this.actionColumn)
+        .then(() => this.cancelAddingColumn());
+    },
+    startEditingColumn(column) {
+      this.adding = false;
+      this.actionColumn.id = column.id;
+      this.actionColumn.title = column.title;
+    },
+    cancelEditingColumn() {
+      this.actionColumn.id = 0;
+    },
+    editColumn() {
+      this.$store
+        .dispatch("boardDetails/editColumn", this.actionColumn)
+        .then(() => this.cancelEditingColumn());
+    },
+    showCardAdd() {
       this.$modal.show(
         CardAdd,
         {
@@ -80,10 +107,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(["board", "columns", "adding", "actionColumn"])
+    ...mapState(["board", "columns"])
   },
   created() {
-    this.loadData(this.$route.params.id);
+    return this.loadData(this.$route.params.id);
   }
 };
 </script>

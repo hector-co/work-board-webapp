@@ -88,7 +88,7 @@ export default {
     ...mapState(["boards", "totalCount", "registering", "actionBoard"])
   },
   created() {
-    this.loadData();
+    return this.loadData();
   }
 };
 </script>

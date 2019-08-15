@@ -1,11 +1,11 @@
 import users from "./modules/users"
 import boards from "./modules/boards"
-import boardColumns from "./modules/board-columns"
+import boardDetails from "./modules/board-details"
 
 export default {
   modules: {
     users,
     boards,
-    boardColumns
+    boardDetails
   }
 }
