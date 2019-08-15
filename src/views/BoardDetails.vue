@@ -2,7 +2,7 @@
   <div class="board-details">
     <h3>{{board.title}}</h3>
     <button @click="startAddingColumn" class="btn btn-primary mb-3 mr-1">Add column</button>
-    <button @click="showCardAdd" class="btn btn-success mb-3">Add card</button>
+    <button @click="showCardAdd(null)" class="btn btn-success mb-3">Add card</button>
 
     <div class="card-group">
       <div v-for="column of columns" :key="column.id" class="card card-column">
@@ -26,8 +26,17 @@
           </div>
         </div>
         <div class="card-body">
+          <div
+            v-for="card of column.cards"
+            :key="card.id"
+            class="card text-white bg-info card-board"
+          >
+            <div class="card-body">
+              <h5 class="card-title">{{card.title}}</h5>
+            </div>
+          </div>
           <div class="text-center">
-            <button class="btn btn-info card-add">Add card</button>
+            <button @click="showCardAdd(column.id)" class="btn btn-info card-add">Add card</button>
           </div>
         </div>
       </div>
@@ -54,6 +63,7 @@ export default {
   name: "BoardDetails",
   data() {
     return {
+      boardId: Number,
       adding: false,
       actionColumn: {
         id: Number,
@@ -89,19 +99,15 @@ export default {
         .dispatch("boardDetails/editColumn", this.actionColumn)
         .then(() => this.cancelEditingColumn());
     },
-    showCardAdd() {
+    showCardAdd(columnId) {
       this.$modal.show(
         CardAdd,
         {
-          text: "This text is passed as a property"
+          boardId: this.boardId,
+          columnId
         },
         {
           height: "auto"
-        },
-        {
-          "before-close": event => {
-            console.log("this will be called before the modal closes", event);
-          }
         }
       );
     }
@@ -110,7 +116,8 @@ export default {
     ...mapState(["board", "columns"])
   },
   created() {
-    return this.loadData(this.$route.params.id);
+    this.boardId = this.$route.params.id;
+    return this.loadData(this.boardId);
   }
 };
 </script>
