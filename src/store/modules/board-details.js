@@ -8,8 +8,7 @@ export default {
       id: Number,
       title: String
     },
-    columns: [],
-    cards: [],
+    columns: []
   },
   actions: {
     loadData({ commit }, boardId) {
@@ -64,7 +63,8 @@ export default {
       state.columns.splice(index, 1);
     },
     addCard(state, card) {
-      state.cards.push(card);
+      var column = state.columns.find(c => c.id == card.column.id);
+      column.cards.push(card);
     }
   }
 }

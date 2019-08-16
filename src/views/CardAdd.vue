@@ -84,7 +84,7 @@ export default {
         description: "",
         color: 1,
         priority: 1,
-        estimatedPoints: null
+        estimatedPoints: 1
       }
     };
   },
