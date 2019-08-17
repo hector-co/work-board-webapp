@@ -1,7 +1,7 @@
 <template>
   <div class="card-add">
     <div class="card">
-      <div class="card-header">Add card</div>
+      <div class="card-header">{{actionLabel}} card</div>
       <div class="card-body">
         <b-form-group id="title-fieldset" label="Title" label-for="title-input">
           <b-form-input id="title-input" v-model="title" trim></b-form-input>

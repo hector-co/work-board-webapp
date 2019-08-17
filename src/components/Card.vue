@@ -1,13 +1,15 @@
 <template>
-  <div :class="classColor">
-    <div class="card-body">
-      <h5 @click="select" class="card-title">{{card.title}}</h5>
-    </div>
-    <div class="card-footer text-right">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm text-left">{{priorityText}}</div>
-          <div class="col-sm text-right">{{card.consumedPoints}}/{{card.estimatedPoints}}</div>
+  <div class="c-card">
+    <div :class="classColor">
+      <div class="card-body">
+        <h5 @click="select" class="card-title">{{card.title}}</h5>
+      </div>
+      <div class="card-footer text-right">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm text-left">{{priorityText}}</div>
+            <div class="col-sm text-right">{{card.consumedPoints}}/{{card.estimatedPoints}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -62,3 +64,10 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.c-card {
+  .card-title {
+    cursor: pointer;
+  }
+}
+</style>
