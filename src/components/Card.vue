@@ -1,7 +1,15 @@
 <template>
   <div :class="classColor">
     <div class="card-body">
-      <h5 class="card-title">{{card.title}}</h5>
+      <h5 @click="select" class="card-title">{{card.title}}</h5>
+    </div>
+    <div class="card-footer text-right">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm text-left">{{priorityText}}</div>
+          <div class="col-sm text-right">{{card.consumedPoints}}/{{card.estimatedPoints}}</div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -13,11 +21,16 @@ export default {
   props: {
     card: CardModel
   },
+  methods: {
+    select() {
+      this.$emit("selected", this.card);
+    }
+  },
   computed: {
-    classColor: function() {
+    classColor() {
       return `card text-white bg-${this.color} card-board`;
     },
-    color: function() {
+    color() {
       switch (this.card.color) {
         case 1:
           return "success";
@@ -33,6 +46,18 @@ export default {
           return "secondary";
       }
       return "";
+    },
+    priorityText() {
+      switch (this.card.priority) {
+        case 0:
+          return "Low";
+        case 1:
+          return "Medium";
+        case 2:
+          return "High";
+        default:
+          return "none";
+      }
     }
   }
 };

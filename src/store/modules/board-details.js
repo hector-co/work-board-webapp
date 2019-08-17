@@ -43,6 +43,10 @@ export default {
     addCard({ commit }, card) {
       cardsService.register(card)
         .then(result => commit("addCard", result.data));
+    },
+    editCard({ commit }, card) {
+      cardsService.update(card)
+        .then(() => commit("editCard", card));
     }
   },
   mutations: {
@@ -65,6 +69,15 @@ export default {
     addCard(state, card) {
       var column = state.columns.find(c => c.id == card.column.id);
       column.cards.push(card);
+    },
+    editCard(state, card) {
+      var column = state.columns.find(c => c.id == card.columnId);
+      var actualCard = column.cards.find(c => c.id == card.id);
+      actualCard.title = card.title;
+      actualCard.description = card.description;
+      actualCard.color = card.color;
+      actualCard.priority = parseInt(card.priority);
+      actualCard.estimatedPoints = card.estimatedPoints;
     }
   }
 }

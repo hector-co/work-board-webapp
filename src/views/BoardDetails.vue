@@ -26,16 +26,12 @@
           </div>
         </div>
         <div class="card-body">
-          <!-- <div
+          <card
             v-for="card of column.cards"
             :key="card.id"
-            class="card text-white bg-info card-board"
-          >
-            <div class="card-body">
-              <h5 class="card-title">{{card.title}}</h5>
-            </div>
-          </div>-->
-          <card v-for="card of column.cards" :key="card.id" :card="card"></card>
+            :card="card"
+            @selected="showCardEdit(card)"
+          ></card>
           <div class="text-center">
             <button @click="showCardAdd(column.id)" class="btn btn-info card-add">Add card</button>
           </div>
@@ -58,8 +54,9 @@
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("boardDetails");
 
-import CardAdd from "./CardAdd";
+import CardDetails from "./CardDetails";
 import Card from "../components/Card";
+import { CardModel } from "../models/card-model";
 
 export default {
   name: "BoardDetails",
@@ -103,10 +100,24 @@ export default {
     },
     showCardAdd(columnId) {
       this.$modal.show(
-        CardAdd,
+        CardDetails,
+        {
+          card: CardModel.create({
+            board: { id: this.boardId },
+            column: columnId ? { id: columnId } : null
+          }),
+        },
+        {
+          height: "auto"
+        }
+      );
+    },
+    showCardEdit(card) {
+      this.$modal.show(
+        CardDetails,
         {
           boardId: this.boardId,
-          columnId
+          card
         },
         {
           height: "auto"

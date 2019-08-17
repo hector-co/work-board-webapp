@@ -4,7 +4,7 @@
 
     <div class="cards-grid">
       <div class="card-column" v-for="board in boards" :key="board.id">
-        <div v-if="board.id == actionBoard.id" class="card bg-primary">
+        <div v-if="board.id == actionBoard.id" class="card border-primary">
           <div class="card-body">
             <input
               type="text"
@@ -24,7 +24,7 @@
             <b-button @click="cancelUpdating" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
-        <div v-else @click="boardDetails(board)" class="card text-white bg-primary card-board">
+        <div v-else @click="boardDetails(board)" class="card border-primary card-board">
           <div class="card-body">
             <h5 class="card-title">{{board.title}}</h5>
             <p class="card-text">{{board.description}}</p>
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="card-column">
-        <div v-if="registering" class="card bg-light border-primary">
+        <div v-if="registering" class="card border-primary">
           <div class="card-body">
             <input
               type="text"
@@ -55,7 +55,7 @@
             <b-button @click="cancelRegistering" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
-        <div v-else class="card bg-light">
+        <div v-else class="card border-primary bg-light">
           <div class="card-body text-center">
             <button @click="startRegistering" class="btn btn-primary">Add board</button>
           </div>

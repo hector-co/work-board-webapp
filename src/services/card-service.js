@@ -14,5 +14,8 @@ export default {
     return {
       data: CardModel.create(response.data.data)
     };
+  },
+  async update(card) {
+    await api.put(`cards/${card.id}`, card);
   }
 }

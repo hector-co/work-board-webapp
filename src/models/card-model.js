@@ -6,7 +6,7 @@ export class CardModel {
     this.title = "";
     this.description = "";
     this.color = 1;
-    this.priority = 2;
+    this.priority = 1;
     this.estimatedPoints = 0;
     this.consumedPoints = 0;
     this.done = false;
@@ -15,17 +15,17 @@ export class CardModel {
 
   static create({ id, board, column, title, description, color, priority, estimatedPoints, consumedPoints, done, order }) {
     var model = new CardModel();
-    model.id = id;
+    model.id = id || 0;
     model.board = board;
     model.column = column;
-    model.title = title;
-    model.description = description;
-    model.color = color;
-    model.priority = priority;
-    model.estimatedPoints = estimatedPoints;
-    model.consumedPoints = consumedPoints;
-    model.done = done;
-    model.order = order;
+    model.title = title || "";
+    model.description = description || "";
+    model.color = color || 1;
+    model.priority = priority == null ? 1 : priority;
+    model.estimatedPoints = estimatedPoints || 0;
+    model.consumedPoints = consumedPoints || 0;
+    model.done = done || false;
+    model.order = order || 1;
 
     return model;
   }
