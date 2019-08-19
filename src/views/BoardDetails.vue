@@ -2,7 +2,7 @@
   <div class="board-details">
     <h3>{{board.title}}</h3>
     <button @click="startAddingColumn" class="btn btn-primary mb-3 mr-1">Add column</button>
-    <button @click="showCardAdd(null)" class="btn btn-success mb-3">Add card</button>
+    <button v-if="columns.length" @click="showCardAdd(null)" class="btn btn-success mb-3">Add card</button>
 
     <div class="card-group">
       <div v-for="column of columns" :key="column.id" class="card card-column">
