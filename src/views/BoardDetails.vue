@@ -130,12 +130,15 @@ export default {
     },
     endDrag(event) {
       var cardId = parseInt(event.item.getAttribute("data-card-id"));
-      var columnId = parseInt(
+      var sourceColumnId = parseInt(
+        event.from.parentNode.parentNode.getAttribute("data-column-id")
+      );
+      var targetColumnId = parseInt(
         event.to.parentNode.parentNode.getAttribute("data-column-id")
       );
       var order = event.newIndex + 1;
 
-      this.moveCard({ cardId, columnId, order });
+      this.moveCard({ cardId, sourceColumnId, targetColumnId, order });
     }
   },
   computed: {

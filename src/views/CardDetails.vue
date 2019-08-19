@@ -7,7 +7,7 @@
           <b-form-input id="title-input" v-model="title" trim></b-form-input>
         </b-form-group>
         <b-form-group id="description-fieldset" label="Description" label-for="description-input">
-          <b-form-input id="description-input" v-model="description" trim></b-form-input>
+          <b-form-textarea id="description-input" v-model="description"></b-form-textarea>
         </b-form-group>
         <b-form-group id="color-fieldset" label="Color" label-for="color-input">
           <b-container>

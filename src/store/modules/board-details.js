@@ -48,9 +48,9 @@ export default {
       cardsService.update(card)
         .then(() => commit("editCard", card));
     },
-    moveCard({ commit }, { cardId, columnId, order }) {
-      cardsService.move(cardId, columnId, order)
-        .then(() => commit("moveCard", { cardId, columnId, order }));
+    moveCard({ commit }, { cardId, sourceColumnId, targetColumnId, order }) {
+      cardsService.move(cardId, targetColumnId, order)
+        .then(() => commit("moveCard", { cardId, sourceColumnId, targetColumnId, order }));
     }
   },
   mutations: {
@@ -84,8 +84,11 @@ export default {
       actualCard.priority = parseInt(card.priority);
       actualCard.estimatedPoints = card.estimatedPoints;
     },
-    moveCard(state, { cardId, columnId, order }) {
-
+    moveCard(state, { cardId, sourceColumnId, targetColumnId, order }) {
+      if (sourceColumnId == targetColumnId) return;
+      var targetColumn = state.columns.find(c => c.id == targetColumnId);
+      var card = targetColumn.cards.find(c => c.id == cardId);
+      card.column = targetColumn;
     }
   }
 }
