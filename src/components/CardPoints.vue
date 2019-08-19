@@ -7,10 +7,24 @@
           <b-form-input id="label-input" v-model="label" readonly></b-form-input>
         </b-form-group>
         <b-form-group id="consumed-fieldset" label="Consumed points" label-for="consumed-input">
-          <b-form-input id="consumed-input" v-model="consumedPoints" type="number"></b-form-input>
+          <input
+            id="consumed-input"
+            type="number"
+            v-model="consumedPoints"
+            class="form-control"
+            :class="{'is-invalid': $v.consumedPoints.$error}"
+          />
+          <p class="invalid-feedback">Required field</p>
         </b-form-group>
         <b-form-group id="estimated-fieldset" label="Estimated points" label-for="estimated-input">
-          <b-form-input id="estimated-input" v-model="estimatedPoints" type="number"></b-form-input>
+          <input
+            id="estimated-input"
+            type="number"
+            v-model="estimatedPoints"
+            class="form-control"
+            :class="{'is-invalid': $v.estimatedPoints.$error}"
+          />
+          <p class="invalid-feedback">Required field</p>
         </b-form-group>
       </div>
       <div class="card-footer text-right">
@@ -24,6 +38,7 @@
 import { createNamespacedHelpers } from "vuex";
 import { CardModel } from "../models/card-model";
 const { mapActions } = createNamespacedHelpers("boardDetails");
+import { required, minValue } from "vuelidate/lib/validators";
 
 export default {
   name: "CardPoints",
@@ -44,6 +59,8 @@ export default {
   methods: {
     ...mapActions(["updateCardPoints"]),
     save() {
+      this.$v.$touch();
+      if (this.$v.$anyError) return;
       this.updateCardPoints({
         card: this.card,
         estimatedPoints: this.estimatedPoints,
@@ -54,6 +71,10 @@ export default {
     close() {
       this.$emit("close");
     }
+  },
+  validations: {
+    consumedPoints: { required, minValue: minValue(0) },
+    estimatedPoints: { required, minValue: minValue(0) }
   },
   created() {
     this.consumedPoints = this.card.consumedPoints;

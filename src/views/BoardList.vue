@@ -10,7 +10,7 @@
               type="text"
               v-model="actionBoard.title"
               class="form-control form-control-sm mb-1"
-              :class="{'is-invalid': !$v.actionBoard.title.required}"
+              :class="{'is-invalid': $v.actionBoard.title.$error}"
               placeholder="Title"
             />
             <p class="invalid-feedback">Required field</p>
@@ -43,7 +43,7 @@
               type="text"
               v-model="actionBoard.title"
               class="form-control form-control-sm mb-1"
-              :class="{'is-invalid': !$v.actionBoard.title.required}"
+              :class="{'is-invalid': $v.actionBoard.title.$error}"
               placeholder="Title"
             />
             <p class="invalid-feedback">Required field</p>

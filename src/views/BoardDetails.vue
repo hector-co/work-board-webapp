@@ -7,9 +7,15 @@
     <div class="card-group">
       <div v-for="column of columns" :key="column.id" class="card card-column">
         <div v-if="column.id == actionColumn.id" class="card-header column-editing">
-          <input type="text" v-model="actionColumn.title" class="form-control form-control-sm" />
+          <input
+            type="text"
+            v-model="actionColumn.title"
+            class="form-control form-control-sm"
+            :class="{'is-invalid': $v.actionColumn.title.$error}"
+          />
+          <p class="invalid-feedback">Required field</p>
           <div class="btn-options text-right">
-            <b-button @click="editColumn" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="localEditColumn" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelEditingColumn" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
@@ -44,9 +50,15 @@
       </div>
       <div v-if="adding" class="card card-column">
         <div class="card-header column-editing">
-          <input type="text" v-model="actionColumn.title" class="form-control form-control-sm" />
+          <input
+            type="text"
+            v-model="actionColumn.title"
+            class="form-control form-control-sm"
+            :class="{'is-invalid': $v.actionColumn.title.$error}"
+          />
+          <p class="invalid-feedback">Required field</p>
           <div class="btn-options text-right">
-            <b-button @click="addColumn" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="localAddColumn" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelAddingColumn" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
@@ -58,6 +70,7 @@
 <script>
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("boardDetails");
+import { required } from "vuelidate/lib/validators";
 
 import CardDialog from "../components/CardDialog";
 import CardPoints from "../components/CardPoints";
@@ -77,7 +90,13 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["loadData", "editColumn", "deleteColumn", "moveCard"]),
+    ...mapActions([
+      "loadData",
+      "addColumn",
+      "editColumn",
+      "deleteColumn",
+      "moveCard"
+    ]),
     startAddingColumn() {
       this.adding = true;
       this.actionColumn.id = 0;
@@ -86,10 +105,10 @@ export default {
     cancelAddingColumn() {
       this.adding = false;
     },
-    addColumn() {
-      this.$store
-        .dispatch("boardDetails/addColumn", this.actionColumn)
-        .then(() => this.cancelAddingColumn());
+    localAddColumn() {
+      this.$v.actionColumn.$touch();
+      if (this.$v.actionColumn.$anyError) return;
+      this.addColumn(this.actionColumn).then(this.cancelAddingColumn);
     },
     startEditingColumn(column) {
       this.adding = false;
@@ -99,10 +118,10 @@ export default {
     cancelEditingColumn() {
       this.actionColumn.id = 0;
     },
-    editColumn() {
-      this.$store
-        .dispatch("boardDetails/editColumn", this.actionColumn)
-        .then(() => this.cancelEditingColumn());
+    localEditColumn() {
+      this.$v.actionColumn.$touch();
+      if (this.$v.actionColumn.$anyError) return;
+      this.editColumn(this.actionColumn).then(this.cancelEditingColumn);
     },
     showCardAdd(columnId) {
       this.$modal.show(
@@ -159,6 +178,11 @@ export default {
   },
   components: {
     card: Card
+  },
+  validations: {
+    actionColumn: {
+      title: { required }
+    }
   },
   created() {
     this.boardId = parseInt(this.$route.params.id);

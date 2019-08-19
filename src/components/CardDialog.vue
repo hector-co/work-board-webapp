@@ -7,7 +7,14 @@
           <b-form-input id="code-input" v-model="code" readonly></b-form-input>
         </b-form-group>
         <b-form-group id="title-fieldset" label="Title" label-for="title-input">
-          <b-form-input id="title-input" v-model="title"></b-form-input>
+          <input
+            id="title-input"
+            type="text"
+            v-model="title"
+            class="form-control"
+            :class="{'is-invalid': $v.title.$error}"
+          />
+          <p class="invalid-feedback">Required field</p>
         </b-form-group>
         <b-form-group id="description-fieldset" label="Description" label-for="description-input">
           <b-form-textarea id="description-input" v-model="description"></b-form-textarea>
@@ -62,7 +69,14 @@
           </b-form-select>
         </b-form-group>
         <b-form-group id="estimated-fieldset" label="Estimated points" label-for="estimated-input">
-          <b-form-input id="estimated-input" v-model="estimatedPoints" type="number"></b-form-input>
+          <input
+            id="estimated-input"
+            type="number"
+            v-model="estimatedPoints"
+            class="form-control"
+            :class="{'is-invalid': $v.estimatedPoints.$error}"
+          />
+          <p class="invalid-feedback">Required field</p>
         </b-form-group>
       </div>
       <div class="card-footer text-right">
@@ -76,6 +90,7 @@
 import { createNamespacedHelpers } from "vuex";
 import { CardModel } from "../models/card-model";
 const { mapActions } = createNamespacedHelpers("boardDetails");
+import { required, minValue } from "vuelidate/lib/validators";
 
 export default {
   name: "CardAdd",
@@ -97,6 +112,8 @@ export default {
       this.color = newColor;
     },
     save() {
+      this.$v.$touch();
+      if (this.$v.$anyError) return;
       if (!this.isEdit) {
         this.addCard({
           ...this.$data,
@@ -126,6 +143,10 @@ export default {
     actionLabel() {
       return this.isEdit ? "Update" : "Add";
     }
+  },
+  validations: {
+    title: { required },
+    estimatedPoints: { required, minValue: minValue(0) }
   },
   created() {
     this.card = this.card || new CardModel();
