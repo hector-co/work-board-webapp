@@ -10,8 +10,10 @@
               type="text"
               v-model="actionBoard.title"
               class="form-control form-control-sm mb-1"
+              :class="{'is-invalid': !$v.actionBoard.title.required}"
               placeholder="Title"
             />
+            <p class="invalid-feedback">Required field</p>
             <input
               type="text"
               v-model="actionBoard.description"
@@ -41,8 +43,10 @@
               type="text"
               v-model="actionBoard.title"
               class="form-control form-control-sm mb-1"
+              :class="{'is-invalid': !$v.actionBoard.title.required}"
               placeholder="Title"
             />
+            <p class="invalid-feedback">Required field</p>
             <input
               type="text"
               v-model="actionBoard.description"
@@ -67,6 +71,7 @@
 <script>
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("boards");
+import { required } from "vuelidate/lib/validators";
 
 export default {
   name: "BoardList",
@@ -92,6 +97,8 @@ export default {
       this.registering = false;
     },
     localRegister() {
+      this.$v.actionBoard.$touch();
+      if (this.$v.actionBoard.$anyError) return;
       this.register(this.actionBoard).then(this.cancelRegistering);
     },
     startUpdating(board) {
@@ -104,6 +111,8 @@ export default {
       this.actionBoard.id = 0;
     },
     localUpdate() {
+      this.$v.actionBoard.$touch();
+      if (this.$v.actionBoard.$anyError) return;
       this.update(this.actionBoard).then(this.cancelUpdating);
     },
     boardDetails(board) {
@@ -112,6 +121,11 @@ export default {
   },
   computed: {
     ...mapState(["boards", "totalCount"])
+  },
+  validations: {
+    actionBoard: {
+      title: { required }
+    }
   },
   created() {
     return this.loadData();
