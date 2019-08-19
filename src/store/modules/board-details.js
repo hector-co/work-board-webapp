@@ -51,6 +51,10 @@ export default {
     moveCard({ commit }, { cardId, sourceColumnId, targetColumnId, order }) {
       cardsService.move(cardId, targetColumnId, order)
         .then(() => commit("moveCard", { cardId, sourceColumnId, targetColumnId, order }));
+    },
+    updateCardPoints({ commit }, { card, estimatedPoints, consumedPoints }) {
+      cardsService.updatePoints(card.id, estimatedPoints, consumedPoints)
+        .then(() => commit("updateCardPoints", { card, estimatedPoints, consumedPoints }));
     }
   },
   mutations: {
@@ -89,6 +93,10 @@ export default {
       var targetColumn = state.columns.find(c => c.id == targetColumnId);
       var card = targetColumn.cards.find(c => c.id == cardId);
       card.column = targetColumn;
+    },
+    updateCardPoints(state, { card, estimatedPoints, consumedPoints }) {
+      card.estimatedPoints = estimatedPoints;
+      card.consumedPoints = consumedPoints;
     }
   }
 }

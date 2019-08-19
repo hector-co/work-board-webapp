@@ -33,6 +33,7 @@
                 :key="card.id"
                 :card="card"
                 @selected="showCardEdit(card)"
+                @pointsSelected="showCardPoints(card)"
               ></card>
             </draggable>
             <div class="text-center">
@@ -58,7 +59,8 @@
 import { createNamespacedHelpers } from "vuex";
 const { mapState, mapActions } = createNamespacedHelpers("boardDetails");
 
-import CardDetails from "./CardDetails";
+import CardDialog from "../components/CardDialog";
+import CardPoints from "../components/CardPoints";
 import Card from "../components/Card";
 import { CardModel } from "../models/card-model";
 
@@ -104,7 +106,7 @@ export default {
     },
     showCardAdd(columnId) {
       this.$modal.show(
-        CardDetails,
+        CardDialog,
         {
           card: CardModel.create({
             board: { id: this.boardId },
@@ -118,9 +120,20 @@ export default {
     },
     showCardEdit(card) {
       this.$modal.show(
-        CardDetails,
+        CardDialog,
         {
           boardId: this.boardId,
+          card
+        },
+        {
+          height: "auto"
+        }
+      );
+    },
+    showCardPoints(card) {
+      this.$modal.show(
+        CardPoints,
+        {
           card
         },
         {

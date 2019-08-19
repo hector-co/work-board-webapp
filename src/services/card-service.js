@@ -20,5 +20,8 @@ export default {
   },
   async move(cardId, columnId, order) {
     await api.post(`cards/${cardId}/move`, { columnId, order });
+  },
+  async updatePoints(cardId, estimatedPoints, consumedPoints) {
+    await api.post(`cards/${cardId}/points`, { estimatedPoints, consumedPoints });
   }
 }

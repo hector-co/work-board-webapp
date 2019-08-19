@@ -3,8 +3,11 @@
     <div class="card">
       <div class="card-header">{{actionLabel}} card</div>
       <div class="card-body">
+        <b-form-group id="code-fieldset" v-if="isEdit" label="Code" label-for="code-input">
+          <b-form-input id="code-input" v-model="code" readonly></b-form-input>
+        </b-form-group>
         <b-form-group id="title-fieldset" label="Title" label-for="title-input">
-          <b-form-input id="title-input" v-model="title" trim></b-form-input>
+          <b-form-input id="title-input" v-model="title"></b-form-input>
         </b-form-group>
         <b-form-group id="description-fieldset" label="Description" label-for="description-input">
           <b-form-textarea id="description-input" v-model="description"></b-form-textarea>
@@ -59,7 +62,7 @@
           </b-form-select>
         </b-form-group>
         <b-form-group id="estimated-fieldset" label="Estimated points" label-for="estimated-input">
-          <b-form-input id="estimated-input" v-model="estimatedPoints" type="number" trim></b-form-input>
+          <b-form-input id="estimated-input" v-model="estimatedPoints" type="number"></b-form-input>
         </b-form-group>
       </div>
       <div class="card-footer text-right">
@@ -94,7 +97,7 @@ export default {
       this.color = newColor;
     },
     save() {
-      if (this.card.id == 0) {
+      if (!this.isEdit) {
         this.addCard({
           ...this.$data,
           boardId: this.card.board.id,
@@ -114,8 +117,14 @@ export default {
     }
   },
   computed: {
+    code() {
+      return `c-${this.card.id}`;
+    },
+    isEdit() {
+      return this.card.id > 0;
+    },
     actionLabel() {
-      return this.card.id == 0 ? "Add" : "Edit";
+      return this.isEdit ? "Update" : "Add";
     }
   },
   created() {

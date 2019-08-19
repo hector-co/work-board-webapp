@@ -8,7 +8,10 @@
         <div class="container">
           <div class="row">
             <div class="col-sm text-left">{{priorityText}}</div>
-            <div class="col-sm text-right">{{card.consumedPoints}}/{{card.estimatedPoints}}</div>
+            <div
+              @click="selectPoints"
+              class="col-sm text-right card-points"
+            >{{card.consumedPoints}}/{{card.estimatedPoints}}</div>
           </div>
         </div>
       </div>
@@ -26,6 +29,9 @@ export default {
   methods: {
     select() {
       this.$emit("selected", this.card);
+    },
+    selectPoints() {
+      this.$emit("pointsSelected", this.card);
     }
   },
   computed: {
@@ -66,7 +72,8 @@ export default {
 </script>
 <style lang="scss">
 .c-card {
-  .card-title {
+  .card-title,
+  .card-points {
     cursor: pointer;
   }
 }
