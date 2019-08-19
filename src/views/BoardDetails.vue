@@ -25,15 +25,19 @@
             <b-button @click="deleteColumn(column.id)" size="sm" variant="danger">delete</b-button>
           </div>
         </div>
-        <div class="card-body">
-          <card
-            v-for="card of column.cards"
-            :key="card.id"
-            :card="card"
-            @selected="showCardEdit(card)"
-          ></card>
-          <div class="text-center">
-            <button @click="showCardAdd(column.id)" class="btn btn-info card-add">Add card</button>
+        <div class="card-body" :data-column-id="column.id">
+          <div class="draggable-container">
+            <draggable v-model="column.cards" group="cards" @end="endDrag">
+              <card
+                v-for="card of column.cards"
+                :key="card.id"
+                :card="card"
+                @selected="showCardEdit(card)"
+              ></card>
+            </draggable>
+            <div class="text-center">
+              <button @click="showCardAdd(column.id)" class="btn btn-info card-add">Add card</button>
+            </div>
           </div>
         </div>
       </div>
@@ -71,7 +75,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["loadData", "editColumn", "deleteColumn"]),
+    ...mapActions(["loadData", "editColumn", "deleteColumn", "moveCard"]),
     startAddingColumn() {
       this.adding = true;
       this.actionColumn.id = 0;
@@ -105,7 +109,7 @@ export default {
           card: CardModel.create({
             board: { id: this.boardId },
             column: columnId ? { id: columnId } : null
-          }),
+          })
         },
         {
           height: "auto"
@@ -123,6 +127,15 @@ export default {
           height: "auto"
         }
       );
+    },
+    endDrag(event) {
+      var cardId = parseInt(event.item.getAttribute("data-card-id"));
+      var columnId = parseInt(
+        event.to.parentNode.parentNode.getAttribute("data-column-id")
+      );
+      var order = event.newIndex + 1;
+
+      this.moveCard({ cardId, columnId, order });
     }
   },
   computed: {
@@ -171,11 +184,16 @@ export default {
       }
     }
 
+    .draggable-container {
+      height: 100%;
+      & > div {
+        height: 100%;
+      }
+    }
+
     .card-board {
       margin-bottom: 10px;
     }
   }
 }
 </style>
-
-

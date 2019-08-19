@@ -1,5 +1,5 @@
 <template>
-  <div class="c-card">
+  <div class="c-card" :data-card-id="card.id">
     <div :class="classColor">
       <div class="card-body">
         <h5 @click="select" class="card-title">{{card.title}}</h5>

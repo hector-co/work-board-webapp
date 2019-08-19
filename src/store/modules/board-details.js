@@ -47,6 +47,10 @@ export default {
     editCard({ commit }, card) {
       cardsService.update(card)
         .then(() => commit("editCard", card));
+    },
+    moveCard({ commit }, { cardId, columnId, order }) {
+      cardsService.move(cardId, columnId, order)
+        .then(() => commit("moveCard", { cardId, columnId, order }));
     }
   },
   mutations: {
@@ -55,6 +59,7 @@ export default {
       state.columns = columns;
     },
     addColumn(state, column) {
+      column.cards = [];
       state.columns.push(column);
     },
     editColumn(state, column) {
@@ -78,6 +83,9 @@ export default {
       actualCard.color = card.color;
       actualCard.priority = parseInt(card.priority);
       actualCard.estimatedPoints = card.estimatedPoints;
+    },
+    moveCard(state, { cardId, columnId, order }) {
+
     }
   }
 }
