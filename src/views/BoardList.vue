@@ -20,7 +20,7 @@
             />
           </div>
           <div class="card-footer text-right">
-            <b-button @click="update" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="localUpdate" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelUpdating" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
@@ -51,7 +51,7 @@
             />
           </div>
           <div class="card-footer text-right">
-            <b-button @click="register" size="sm" variant="success" class="mr-1">ok</b-button>
+            <b-button @click="localRegister" size="sm" variant="success" class="mr-1">ok</b-button>
             <b-button @click="cancelRegistering" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
@@ -66,26 +66,52 @@
 </template>
 <script>
 import { createNamespacedHelpers } from "vuex";
-const { mapState, mapMutations, mapActions } = createNamespacedHelpers(
-  "boards"
-);
+const { mapState, mapActions } = createNamespacedHelpers("boards");
 
 export default {
   name: "BoardList",
+  data() {
+    return {
+      registering: false,
+      actionBoard: {
+        id: 0,
+        title: "",
+        description: ""
+      }
+    };
+  },
   methods: {
-    ...mapMutations([
-      "startRegistering",
-      "cancelRegistering",
-      "startUpdating",
-      "cancelUpdating"
-    ]),
     ...mapActions(["loadData", "register", "update"]),
+    startRegistering() {
+      this.actionBoard.id = 0;
+      this.actionBoard.title = "New board";
+      this.actionBoard.description = "";
+      this.registering = true;
+    },
+    cancelRegistering() {
+      this.registering = false;
+    },
+    localRegister() {
+      this.register(this.actionBoard).then(this.cancelRegistering);
+    },
+    startUpdating(board) {
+      this.registering = false;
+      this.actionBoard.id = board.id;
+      this.actionBoard.title = board.title;
+      this.actionBoard.description = board.description;
+    },
+    cancelUpdating() {
+      this.actionBoard.id = 0;
+    },
+    localUpdate() {
+      this.update(this.actionBoard).then(this.cancelUpdating);
+    },
     boardDetails(board) {
       this.$router.push({ name: "boards-details", params: { id: board.id } });
     }
   },
   computed: {
-    ...mapState(["boards", "totalCount", "registering", "actionBoard"])
+    ...mapState(["boards", "totalCount"])
   },
   created() {
     return this.loadData();

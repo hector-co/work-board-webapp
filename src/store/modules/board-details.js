@@ -88,7 +88,7 @@ export default {
       actualCard.priority = parseInt(card.priority);
       actualCard.estimatedPoints = card.estimatedPoints;
     },
-    moveCard(state, { cardId, sourceColumnId, targetColumnId, order }) {
+    moveCard(state, { cardId, sourceColumnId, targetColumnId }) {
       if (sourceColumnId == targetColumnId) return;
       var targetColumn = state.columns.find(c => c.id == targetColumnId);
       var card = targetColumn.cards.find(c => c.id == cardId);
