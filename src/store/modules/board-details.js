@@ -38,7 +38,7 @@ export default {
     },
     deleteColumn({ commit, state }, columnId) {
       boardService.deleteColumn(state.board.id, columnId)
-        .then(commit("deleteColumn", columnId));
+        .then(() => commit("deleteColumn", columnId));
     },
     addCard({ commit }, card) {
       cardsService.register(card)
