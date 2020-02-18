@@ -63,16 +63,16 @@
         </b-form-group>
         <b-form-group id="priority-fieldset" label="Priority" label-for="priority-input">
           <b-form-select v-model="priority">
-            <option value="0">Low</option>
-            <option value="1">Medium</option>
-            <option value="2">High</option>
+            <option :value="0">Low</option>
+            <option :value="1">Medium</option>
+            <option :value="2">High</option>
           </b-form-select>
         </b-form-group>
         <b-form-group id="estimated-fieldset" label="Estimated points" label-for="estimated-input">
           <input
             id="estimated-input"
             type="number"
-            v-model="estimatedPoints"
+            v-model.number="estimatedPoints"
             class="form-control"
             :class="{'is-invalid': $v.estimatedPoints.$error}"
           />

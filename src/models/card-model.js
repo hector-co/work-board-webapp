@@ -22,8 +22,8 @@ export class CardModel {
     model.description = description || "";
     model.color = color || 1;
     model.priority = priority == null ? 1 : priority;
-    model.estimatedPoints = estimatedPoints || 0;
-    model.consumedPoints = consumedPoints || 0;
+    model.estimatedPoints = parseInt(estimatedPoints) || 0;
+    model.consumedPoints = parseInt(consumedPoints) || 0;
     model.done = done || false;
     model.order = order || 1;
 
