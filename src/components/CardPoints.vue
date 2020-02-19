@@ -58,10 +58,10 @@ export default {
   },
   methods: {
     ...mapActions(["updateCardPoints"]),
-    save() {
+    async save() {
       this.$v.$touch();
       if (this.$v.$anyError) return;
-      this.updateCardPoints({
+      await this.updateCardPoints({
         card: this.card,
         estimatedPoints: this.estimatedPoints,
         consumedPoints: this.consumedPoints

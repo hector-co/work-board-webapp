@@ -87,13 +87,13 @@
   </div>
 </template>
 <script>
-import { createNamespacedHelpers } from "vuex";
-import { CardModel } from "../models/card-model";
-const { mapActions } = createNamespacedHelpers("boardDetails");
-import { required, minValue } from "vuelidate/lib/validators";
+import { createNamespacedHelpers } from 'vuex';
+import { CardModel } from '../models/card-model';
+const { mapActions } = createNamespacedHelpers('boardDetails');
+import { required, minValue } from 'vuelidate/lib/validators';
 
 export default {
-  name: "CardAdd",
+  name: 'CardAdd',
   data() {
     return {
       title: String,
@@ -107,30 +107,30 @@ export default {
     card: CardModel
   },
   methods: {
-    ...mapActions(["addCard", "editCard"]),
+    ...mapActions(['addCard', 'editCard']),
     setColor(newColor) {
       this.color = newColor;
     },
-    save() {
+    async save() {
       this.$v.$touch();
       if (this.$v.$anyError) return;
       if (!this.isEdit) {
-        this.addCard({
+        await this.addCard({
           ...this.$data,
           boardId: this.card.board.id,
           columnId: this.card.column ? this.card.column.id : null
         });
       } else {
-        this.editCard({
+        await this.editCard({
           id: this.card.id,
           ...this.$data,
           columnId: this.card.column ? this.card.column.id : null
         });
       }
-      this.$emit("close");
+      this.$emit('close');
     },
     close() {
-      this.$emit("close");
+      this.$emit('close');
     }
   },
   computed: {
@@ -141,7 +141,7 @@ export default {
       return this.card.id > 0;
     },
     actionLabel() {
-      return this.isEdit ? "Update" : "Add";
+      return this.isEdit ? 'Update' : 'Add';
     }
   },
   validations: {

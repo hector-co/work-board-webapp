@@ -1,7 +1,6 @@
 <template>
   <div class="board-list">
     <h3>Boards</h3>
-
     <div class="cards-grid">
       <div class="card-column" v-for="board in boards" :key="board.id">
         <div v-if="board.id == actionBoard.id" class="card border-primary">
@@ -61,45 +60,54 @@
         </div>
         <div v-else class="card border-primary bg-light">
           <div class="card-body text-center">
-            <button @click="startRegistering" class="btn btn-primary">Add board</button>
+            <button v-if="!loading" @click="startRegistering" class="btn btn-primary">Add board</button>
           </div>
         </div>
       </div>
     </div>
+    <h4 v-if="loading">
+      <br />
+      <i>Loading...</i>
+    </h4>
   </div>
 </template>
 <script>
-import { createNamespacedHelpers } from "vuex";
-const { mapState, mapActions } = createNamespacedHelpers("boards");
-import { required } from "vuelidate/lib/validators";
+import { createNamespacedHelpers } from 'vuex';
+const { mapState, mapActions, mapMutations } = createNamespacedHelpers(
+  'boards'
+);
+import { required } from 'vuelidate/lib/validators';
 
 export default {
-  name: "BoardList",
+  name: 'BoardList',
   data() {
     return {
+      loading: true,
       registering: false,
       actionBoard: {
         id: 0,
-        title: "",
-        description: ""
+        title: '',
+        description: ''
       }
     };
   },
   methods: {
-    ...mapActions(["loadData", "register", "update"]),
+    ...mapActions(['loadData', 'register', 'update']),
+    ...mapMutations(['select']),
     startRegistering() {
       this.actionBoard.id = 0;
-      this.actionBoard.title = "New board";
-      this.actionBoard.description = "";
+      this.actionBoard.title = 'New board';
+      this.actionBoard.description = '';
       this.registering = true;
     },
     cancelRegistering() {
       this.registering = false;
     },
-    localRegister() {
+    async localRegister() {
       this.$v.actionBoard.$touch();
       if (this.$v.actionBoard.$anyError) return;
-      this.register(this.actionBoard).then(this.cancelRegistering);
+      await this.register(this.actionBoard);
+      this.cancelRegistering();
     },
     startUpdating(board) {
       this.registering = false;
@@ -110,25 +118,28 @@ export default {
     cancelUpdating() {
       this.actionBoard.id = 0;
     },
-    localUpdate() {
+    async localUpdate() {
       this.$v.actionBoard.$touch();
       if (this.$v.actionBoard.$anyError) return;
-      this.update(this.actionBoard).then(this.cancelUpdating);
+      await this.update(this.actionBoard);
+      this.cancelUpdating();
     },
     boardDetails(board) {
-      this.$router.push({ name: "boards-details", params: { id: board.id } });
+      this.select(board);
+      this.$router.push({ name: 'boards-details', params: { id: board.id } });
     }
   },
   computed: {
-    ...mapState(["boards", "totalCount"])
+    ...mapState(['boards', 'totalCount'])
   },
   validations: {
     actionBoard: {
       title: { required }
     }
   },
-  created() {
-    return this.loadData();
+  async created() {
+    await this.loadData();
+    this.loading = false;
   }
 };
 </script>

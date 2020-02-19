@@ -11,22 +11,20 @@ export default {
     columns: []
   },
   actions: {
-    loadData({ commit }, boardId) {
+    async loadData({ commit }, boardId) {
       let board;
       let columns;
       let cards;
-      boardService.get(boardId)
-        .then(result => { board = result.data })
-        .then(() => boardService.listColumns(boardId))
-        .then(result => { columns = result.data })
-        .then(() => cardsService.list(boardId))
-        .then(result => { cards = result.data })
-        .then(() => {
-          columns.forEach(column => {
-            column.cards = cards.filter(c => c.column.id == column.id);
-          });
-        })
-        .then(() => commit('loadData', { board, columns, cards }));
+
+      board = (await boardService.get(boardId)).data;
+      columns = (await boardService.listColumns(boardId)).data;
+      cards = (await cardsService.list(boardId)).data;
+
+      columns.forEach(column => {
+        column.cards = cards.filter(c => c.column.id == column.id);
+      });
+
+      commit('loadData', { board, columns, cards });
     },
     async addColumn({ commit, state }, column) {
       const result = await boardService.addColumn(state.board.id, column);
@@ -36,25 +34,25 @@ export default {
       await boardService.editColumn(state.board.id, column);
       commit("editColumn", column);
     },
-    deleteColumn({ commit, state }, columnId) {
-      boardService.deleteColumn(state.board.id, columnId)
-        .then(() => commit("deleteColumn", columnId));
+    async deleteColumn({ commit, state }, columnId) {
+      await boardService.deleteColumn(state.board.id, columnId);
+      commit("deleteColumn", columnId);
     },
-    addCard({ commit }, card) {
-      cardsService.register(card)
-        .then(result => commit("addCard", result.data));
+    async addCard({ commit }, card) {
+      const result = await cardsService.register(card);
+      commit("addCard", result.data);
     },
-    editCard({ commit }, card) {
-      cardsService.update(card)
-        .then(() => commit("editCard", card));
+    async editCard({ commit }, card) {
+      await cardsService.update(card);
+      commit("editCard", card);
     },
-    moveCard({ commit }, { cardId, sourceColumnId, targetColumnId, order }) {
-      cardsService.move(cardId, targetColumnId, order)
-        .then(() => commit("moveCard", { cardId, sourceColumnId, targetColumnId, order }));
+    async moveCard({ commit }, { cardId, sourceColumnId, targetColumnId, order }) {
+      await cardsService.move(cardId, targetColumnId, order);
+      commit("moveCard", { cardId, sourceColumnId, targetColumnId, order });
     },
-    updateCardPoints({ commit }, { card, estimatedPoints, consumedPoints }) {
-      cardsService.updatePoints(card.id, estimatedPoints, consumedPoints)
-        .then(() => commit("updateCardPoints", { card, estimatedPoints, consumedPoints }));
+    async updateCardPoints({ commit }, { card, estimatedPoints, consumedPoints }) {
+      await cardsService.updatePoints(card.id, estimatedPoints, consumedPoints);
+      commit("updateCardPoints", { card, estimatedPoints, consumedPoints });
     }
   },
   mutations: {

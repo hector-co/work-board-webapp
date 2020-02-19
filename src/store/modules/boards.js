@@ -4,12 +4,16 @@ export default {
   namespaced: true,
   state: {
     boards: [],
+    selected: {
+      id: Number,
+      title: String
+    },
     totalCount: 0
   },
   actions: {
-    loadData({ commit }, ) {
-      boardService.list()
-        .then(result => commit("loadData", result))
+    async loadData({ commit }, ) {
+      const result = await boardService.list();
+      commit("loadData", result);
     },
     async register({ commit }, board) {
       const result = await boardService.register(board);
@@ -21,6 +25,9 @@ export default {
     }
   },
   mutations: {
+    select(state, board) {
+      state.selected = board;
+    },
     loadData(state, { data, totalCount }) {
       state.boards = data;
       state.totalCount = totalCount;

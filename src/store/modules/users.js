@@ -13,9 +13,9 @@ export default {
     }
   },
   actions: {
-    getUsers({ commit }) {
-      userService.list()
-        .then(result => commit("serUsers", result));
+    async asyncgetUsers({ commit }) {
+      const result = await userService.list();
+      commit("serUsers", result);
     }
   }
 }
