@@ -1,13 +1,20 @@
 <template>
   <div class="board-details">
-    <template v-if="loading">
-      <h3>{{loadingTitle}}</h3>
+    <template v-if="loading && !preLoaded">
       <h3>
-        <i>Loading...</i>
+        {{loadingTitle}}
+        <small>
+          <i>Loading...</i>
+        </small>
       </h3>
     </template>
     <template v-else>
-      <h3>{{board.title}}</h3>
+      <h3>
+        {{board.title}}
+        <small v-if="loading">
+          <i>Loading...</i>
+        </small>
+      </h3>
       <button @click="startAddingColumn" class="btn btn-primary mb-3 mr-1">Add column</button>
       <button v-if="columns.length" @click="showCardAdd(null)" class="btn btn-success mb-3">Add card</button>
 
@@ -89,10 +96,11 @@ export default {
   name: 'BoardDetails',
   data() {
     return {
-      loading: true,
+      loading: Boolean,
+      preLoaded: Boolean,
       loadingTitle: String,
       boardId: Number,
-      adding: false,
+      adding: Boolean,
       actionColumn: {
         id: Number,
         title: String
@@ -197,8 +205,15 @@ export default {
     }
   },
   async created() {
+    this.loading = true;
+    this.adding = false;
+    this.loadingTitle = '';
+
     this.boardId = parseInt(this.$route.params.id);
-    this.loadingTitle = this.$store.state.boards.selected.title;
+
+    if (!(this.$store.state.boards.selected.id instanceof Function))
+      this.loadingTitle = this.$store.state.boards.selected.title;
+    this.preLoaded = this.boardId == this.$store.state.boards.prevSelectedId;
     await this.loadData(this.boardId);
     this.loading = false;
   }

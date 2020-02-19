@@ -1,6 +1,11 @@
 <template>
   <div class="board-list">
-    <h3>Boards</h3>
+    <h3>
+      Boards
+      <small v-if="loading">
+        <i>Loading...</i>
+      </small>
+    </h3>
     <div class="cards-grid">
       <div class="card-column" v-for="board in boards" :key="board.id">
         <div v-if="board.id == actionBoard.id" class="card border-primary">
@@ -65,10 +70,6 @@
         </div>
       </div>
     </div>
-    <h4 v-if="loading">
-      <br />
-      <i>Loading...</i>
-    </h4>
   </div>
 </template>
 <script>

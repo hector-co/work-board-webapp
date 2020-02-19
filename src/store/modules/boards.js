@@ -4,6 +4,7 @@ export default {
   namespaced: true,
   state: {
     boards: [],
+    prevSelectedId: Number,
     selected: {
       id: Number,
       title: String
@@ -26,6 +27,7 @@ export default {
   },
   mutations: {
     select(state, board) {
+      state.prevSelectedId = state.selected.id;
       state.selected = board;
     },
     loadData(state, { data, totalCount }) {
