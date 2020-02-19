@@ -15,8 +15,8 @@
           <i>Loading...</i>
         </small>
       </h3>
-      <button @click="startAddingColumn" class="btn btn-primary mb-3 mr-1">Add column</button>
-      <button v-if="columns.length" @click="showCardAdd(null)" class="btn btn-success mb-3">Add card</button>
+      <button v-if="isOpen" @click="startAddingColumn" class="btn btn-primary mb-3 mr-1">Add column</button>
+      <button v-if="isOpen && columns.length" @click="showCardAdd(null)" class="btn btn-success mb-3">Add card</button>
 
       <div class="card-group">
         <div v-for="column of columns" :key="column.id" class="card card-column">
@@ -35,7 +35,7 @@
           </div>
           <div v-else class="card-header">
             {{column.title}}
-            <div class="btn-options edit text-right">
+            <div v-if="isOpen" class="btn-options edit text-right">
               <b-button
                 @click="startEditingColumn(column)"
                 size="sm"
@@ -56,7 +56,7 @@
                   @pointsSelected="showCardPoints(card)"
                 ></card>
               </draggable>
-              <div class="text-center">
+              <div v-if="isOpen" class="text-center">
                 <button @click="showCardAdd(column.id)" class="btn btn-info card-add">Add card</button>
               </div>
             </div>
@@ -100,6 +100,7 @@ export default {
       preLoaded: Boolean,
       loadingTitle: String,
       boardId: Number,
+      isOpen: Boolean,
       adding: Boolean,
       actionColumn: {
         id: Number,
@@ -147,6 +148,7 @@ export default {
       this.$modal.show(
         CardDialog,
         {
+          boardIsOpen: this.board.state == 0,
           card: CardModel.create({
             board: { id: this.boardId },
             column: columnId ? { id: columnId } : null
@@ -161,7 +163,7 @@ export default {
       this.$modal.show(
         CardDialog,
         {
-          boardId: this.boardId,
+          boardIsOpen: this.board.state == 0,
           card
         },
         {
@@ -173,6 +175,7 @@ export default {
       this.$modal.show(
         CardPoints,
         {
+          boardIsOpen: this.board.state == 0,
           card
         },
         {
@@ -208,6 +211,7 @@ export default {
     this.loading = true;
     this.adding = false;
     this.loadingTitle = '';
+    this.isOpen = false;
 
     this.boardId = parseInt(this.$route.params.id);
 
@@ -215,6 +219,7 @@ export default {
       this.loadingTitle = this.$store.state.boards.selected.title;
     this.preLoaded = this.boardId == this.$store.state.boards.prevSelectedId;
     await this.loadData(this.boardId);
+    this.isOpen = this.board.state == 0;
     this.loading = false;
   }
 };

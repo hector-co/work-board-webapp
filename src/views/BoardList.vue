@@ -6,6 +6,10 @@
         <i>Loading...</i>
       </small>
     </h3>
+    <label>
+      <input v-model="showClosedBoards" type="checkbox" />
+      Show closed boards
+    </label>
     <div class="cards-grid">
       <div class="card-column" v-for="board in boards" :key="board.id">
         <div v-if="board.id == actionBoard.id" class="card border-primary">
@@ -30,13 +34,25 @@
             <b-button @click="cancelUpdating" size="sm" variant="danger">cancel</b-button>
           </div>
         </div>
-        <div v-else @click="boardDetails(board)" class="card border-primary card-board">
+        <div
+          v-else
+          @click="boardDetails(board)"
+          :class="{'bg-secondary': board.state == 1,'text-white': board.state == 1}"
+          class="card border-primary card-board"
+        >
           <div class="card-body">
             <h5 class="card-title">{{board.title}}</h5>
             <p class="card-text">{{board.description}}</p>
           </div>
-          <div class="card-footer text-right">
-            <button @click.stop="startUpdating(board)" class="btn btn-success btn-sm btn-card">edit</button>
+          <div v-if="board.state != 1" class="card-footer text-right">
+            <button
+              @click.stop="startUpdating(board)"
+              class="btn btn-success btn-sm btn-card mr-1"
+            >edit</button>
+            <button @click.stop="close(board)" class="btn btn-danger btn-sm btn-card">close</button>
+          </div>
+          <div v-else class="card-footer text-right">
+            <button @click.stop="reOpen(board)" class="btn btn-success btn-sm btn-card mr-1">re-open</button>
           </div>
         </div>
       </div>
@@ -93,7 +109,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['loadData', 'register', 'update']),
+    ...mapActions(['loadData', 'register', 'update', 'close', 'reOpen']),
     ...mapMutations(['select']),
     startRegistering() {
       this.actionBoard.id = 0;
@@ -131,7 +147,15 @@ export default {
     }
   },
   computed: {
-    ...mapState(['boards', 'totalCount'])
+    ...mapState(['boards', 'totalCount', 'includeClosedBoards']),
+    showClosedBoards: {
+      get() {
+        return this.includeClosedBoards;
+      },
+      async set(value) {
+        await this.loadData(value);
+      }
+    }
   },
   validations: {
     actionBoard: {
@@ -139,7 +163,7 @@ export default {
     }
   },
   async created() {
-    await this.loadData();
+    await this.loadData(this.includeClosedBoards);
     this.loading = false;
   }
 };

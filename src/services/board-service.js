@@ -5,8 +5,9 @@ export default {
     var response = await api.get(`boards/${id}`);
     return response.data;
   },
-  async list() {
-    var response = await api.get("boards");
+  async list(includeClosed) {
+    var url = includeClosed ? `boards?state[in]=0,1` : `boards?state=0`;
+    var response = await api.get(url);
     return response.data;
   },
   async register(board) {
@@ -15,6 +16,12 @@ export default {
   },
   async update(id, board) {
     await api.put(`boards/${id}`, board);
+  },
+  async close(id) {
+    await api.post(`boards/${id}/close`);
+  },
+  async reOpen(id) {
+    await api.post(`boards/${id}/re-open`);
   },
   async listColumns(id) {
     var response = await api.get(`boards/${id}/columns`);

@@ -80,7 +80,7 @@
         </b-form-group>
       </div>
       <div class="card-footer text-right">
-        <button @click="save" class="btn btn-success mr-1">{{actionLabel}}</button>
+        <button v-if="boardIsOpen" @click="save" class="btn btn-success mr-1">{{actionLabel}}</button>
         <button @click="close" class="btn btn-secondary">Cancel</button>
       </div>
     </div>
@@ -104,7 +104,8 @@ export default {
     };
   },
   props: {
-    card: CardModel
+    card: CardModel,
+    boardIsOpen: Boolean
   },
   methods: {
     ...mapActions(['addCard', 'editCard']),

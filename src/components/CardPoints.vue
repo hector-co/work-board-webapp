@@ -28,7 +28,7 @@
         </b-form-group>
       </div>
       <div class="card-footer text-right">
-        <button @click="save" class="btn btn-success mr-1">Update</button>
+        <button v-if="boardIsOpen" @click="save" class="btn btn-success mr-1">Update</button>
         <button @click="close" class="btn btn-secondary">Cancel</button>
       </div>
     </div>
@@ -49,7 +49,8 @@ export default {
     };
   },
   props: {
-    card: CardModel
+    card: CardModel,
+    boardIsOpen: Boolean
   },
   computed: {
     label() {
